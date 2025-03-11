@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Wishing Site</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+    
+    body {
+        background: url('pexels-lilartsy-1793037.jpg') no-repeat center center fixed;
+        background-size: cover;
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .card, .quiz-card {
+        background: rgba(255, 255, 255, 0.9);
+        color: black;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .btn {
+        background: linear-gradient(to right, #ff9a9e, #fad0c4);
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 18px;
+        transition: transform 0.2s, background 0.3s;
+    }
+    .btn:hover {
+        transform: scale(1.1);
+        background: linear-gradient(to right, #fad0c4, #ff9a9e);
+    }
+    .hidden {
+        display: none;
+    }
+    .quiz-options {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    .quiz-option {
+        padding: 15px 22px;
+        background: #ff7675;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: bold;
+        transition: transform 0.3s, background 0.3s;
+    }
+    .quiz-option:hover {
+        transform: scale(1.15);
+        background: #d63031;
+    }
+    .increase-size {
+        font-size: 30px !important;
+    }
+    .media {
+        margin-top: 25px;
+    }
+    .cake-container {
+        margin-top: 20px;
+    }
+    .cake-img {
+        width: 300px;
+        display: none;
+        transition: opacity 1s ease-in-out;
+    }
+    .candles {
+        width: 300px;
+        display: none;
+    }
+    .candles-lit {
+        width: 300px;
+        display: none;
+    }
+</style>
+</head>
+<body>
+<div id="quiz-section" class="quiz-card">
+    <h2>Answer these questions before proceeding!</h2>
+    <p id="question"></p>
+    <div id="options" class="quiz-options"></div>
+</div>
+
+<div id="birthday-page" class="hidden">
+    <h1>🎉 Happy Birthday! 🎂</h1>
+    <div class="cake-container">
+        <button class="btn" id="addCakeBtn" onclick="addCake()">Add Cake 🍰</button>
+        <img src="" id="cakeImage" class="cake-img">
+        <button class="btn hidden" id="addCandlesBtn" onclick="addCandles()">Add Candles 🕯️</button>
+        <img src="candles.png" id="candles" class="candles">
+        <button class="btn hidden" id="lightCandlesBtn" onclick="lightCandles()">Light Candles 🔥</button>
+        <img src="candles-lit.png" id="candlesLit" class="candles-lit">
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { 
+            question: "Cake or gifts, pick one!", 
+            options: ["Cake 🍰", "Gifts 🎁"]
+        },
+        { 
+            question: "Are we celebrating your age or avoiding it?", 
+            options: ["Celebrating! 🎉", "Avoiding... 😅"],
+            enforceFirstOption: true
+        },
+        { 
+            question: "Should we start calling you ‘Aunty’ or 'Gravity' now?", 
+            options: ["Aunty 😆", "Gravity 😜"],
+            enforceSecondOption: true
+        },
+        { 
+            question: "Do you love the person's efforts for making this website or nah?", 
+            options: ["Yes, it's amazing! ❤️", "Nah, try harder 😝"]
+        }
+    ];
+
+    let currentQuestion = 0;
+    function loadQuestion() {
+        if (currentQuestion >= questions.length) {
+            document.getElementById("quiz-section").classList.add("hidden");
+            document.getElementById("birthday-page").classList.remove("hidden");
+            return;
+        }
+        document.getElementById("question").innerText = questions[currentQuestion].question;
+        let optionsHTML = "";
+        questions[currentQuestion].options.forEach((option, index) => {
+            optionsHTML += `<button class='quiz-option' id='option${index}' onclick='handleAnswer(${index})'>${option}</button>`;
+        });
+        document.getElementById("options").innerHTML = optionsHTML;
+    }
+
+    function handleAnswer(index) {
+        let question = questions[currentQuestion];
+        if (question.enforceFirstOption && index !== 0) {
+            document.getElementById("option0").style.fontSize = "1.5em";
+            return;
+        }
+        if (question.enforceSecondOption && index !== 1) {
+            document.getElementById("option1").style.fontSize = "1.5em";
+            return;
+        }
+        currentQuestion++;
+        loadQuestion();
+    }
+
+    function addCake() {
+        document.getElementById("cakeImage").src = "cake image.jpg";
+        document.getElementById("cakeImage").style.display = "block";
+        document.getElementById("addCakeBtn").style.display = "none";
+        document.getElementById("addCandlesBtn").classList.remove("hidden");
+    }
+
+    function addCandles() {
+        document.getElementById("candles").style.display = "block";
+        document.getElementById("addCandlesBtn").style.display = "none";
+        document.getElementById("lightCandlesBtn").classList.remove("hidden");
+    }
+
+    function lightCandles() {
+        document.getElementById("candles").style.display = "none";
+        document.getElementById("candlesLit").style.display = "block";
+        document.getElementById("lightCandlesBtn").style.display = "none";
+    }
+
+    loadQuestion();
+</script>
+</body>
+</html>
